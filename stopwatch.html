@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color:  #aaaaaa;
+            margin: 0;
+        }
+        #stopwatch {
+            text-align: center;
+            font-size: 3em;
+        }
+        #display {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #switch-container {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #838383;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #c7c7c7;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        #label {
+            font-size: 0.8em;
+            margin-top: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div id="stopwatch">
+        <div id="display">00:00:00</div>
+        <div id="switch-container">
+            <label>Left Click</label>
+            <label class="switch">
+                <input type="checkbox" id="toggle">
+                <span class="slider"></span>
+            </label>
+            <label>Space Bar</label>
+            <div id="label">Toggle to select control method</div>
+        </div>
+    </div>
+
+    <script>
+        let startTime, elapsedTime = 0;
+        let timerInterval;
+        let running = false;
+        let useSpace = false;
+
+        function timeToString(time) {
+            let diffInHrs = Math.floor(time / 3600000);
+            let diffInMins = Math.floor((time % 3600000) / 60000);
+            let diffInSecs = Math.floor((time % 60000) / 1000);
+
+            let hrs = diffInHrs.toString().padStart(2, '0');
+            let mins = diffInMins.toString().padStart(2, '0');
+            let secs = diffInSecs.toString().padStart(2, '0');
+
+            return `${hrs}:${mins}:${secs}`;
+        }
+
+        function print(txt) {
+            document.getElementById("display").innerHTML = txt;
+        }
+
+        function startStopwatch() {
+            startTime = Date.now() - elapsedTime;
+            timerInterval = setInterval(() => {
+                elapsedTime = Date.now() - startTime;
+                print(timeToString(elapsedTime));
+            }, 1000);
+        }
+
+        function stopStopwatch() {
+            clearInterval(timerInterval);
+        }
+
+        function toggleStopwatch() {
+            if (!running) {
+                startStopwatch();
+            } else {
+                stopStopwatch();
+            }
+            running = !running;
+        }
+
+        // Event listener for switching control method
+        document.getElementById("toggle").addEventListener("change", function() {
+            useSpace = this.checked;
+        });
+
+        // Left-click start/stop if switch is off
+        document.addEventListener("click", function(event) {
+            if (!useSpace) {
+                toggleStopwatch();
+            }
+        });
+
+        // Space bar start/stop if switch is on
+        document.addEventListener("keydown", function(event) {
+            if (useSpace && event.code === "Space") {
+                event.preventDefault();
+                toggleStopwatch();
+            }
+        });
+    </script>
+</body>
+</html>
