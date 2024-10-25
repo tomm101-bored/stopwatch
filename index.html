@@ -71,6 +71,20 @@
             margin-top: 10px;
             color: #e7e7e7;
         }
+
+        #reset-button {
+            font-size: 1.2em;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #reset-button:hover {
+            background-color: #bb3f31;
+        }
     </style>
 </head>
 <body>
@@ -85,6 +99,7 @@
             <label>Space Bar</label>
             <div id="label">Toggle to select control method</div>
         </div>
+        <button id="reset-button" onclick="resetStopwatch()">Reset</button>
     </div>
 
     <script>
